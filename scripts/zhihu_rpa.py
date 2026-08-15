@@ -144,6 +144,7 @@ class ZhihuRPA:
 
         if not self.page:
             await self.start()
+            self.page = await self.context.new_page()
 
         # 访问创作中心
         await self.page.goto('https://www.zhihu.com/creator', wait_until='networkidle')
@@ -241,6 +242,7 @@ class ZhihuRPA:
         """搜索问题（RPA方式）"""
         if not self.page:
             await self.start()
+            self.page = await self.context.new_page()
 
         # 访问搜索页面
         search_url = f'https://www.zhihu.com/search?type=content&q={keyword}'
@@ -319,6 +321,7 @@ class ZhihuRPA:
         """获取问题下的回答（RPA方式）"""
         if not self.page:
             await self.start()
+            self.page = await self.context.new_page()
 
         await self.page.goto(question_url, wait_until='networkidle')
         await self.human_like_wait()
