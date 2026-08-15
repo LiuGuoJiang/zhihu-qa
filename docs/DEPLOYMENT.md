@@ -257,14 +257,17 @@ npm install -g @anthropic-ai/claude-code
 claude --version
 ```
 
-### 2. 配置 Claude API 密钥
+### 2. 登录 Claude Code CLI
 
 ```bash
-# 设置 API 密钥
-claude config set api_key your_anthropic_api_key
+# 登录 Claude Code（会打开浏览器进行认证）
+claude login
 
-# 验证配置
-claude config get
+# 验证登录状态
+claude whoami
+
+# 查看可用模型
+claude models
 ```
 
 ### 3. 初始化 Paperclip 项目
