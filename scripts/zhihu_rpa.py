@@ -76,7 +76,7 @@ class ZhihuRPA:
         if not self.page:
             self.page = await self.context.new_page()
 
-        await self.page.goto('https://www.zhihu.com', wait_until='networkidle')
+        await self.page.goto('https://www.zhihu.com', wait_until='domcontentloaded')
 
         # 检查是否需要登录
         need_login = await self.page.query_selector('.SignContainer-header')
@@ -147,7 +147,7 @@ class ZhihuRPA:
             self.page = await self.context.new_page()
 
         # 访问创作中心
-        await self.page.goto('https://www.zhihu.com/creator', wait_until='networkidle')
+        await self.page.goto('https://www.zhihu.com/creator', wait_until='domcontentloaded')
         await self.human_like_wait()
 
         # 点击"等你来答"标签
@@ -171,7 +171,7 @@ class ZhihuRPA:
         except Exception as e:
             print(f"点击等你来答失败: {e}")
             # 尝试直接访问邀请回答页面
-            await self.page.goto('https://www.zhihu.com/creator/mono/answer?status=inviting', wait_until='networkidle')
+            await self.page.goto('https://www.zhihu.com/creator/mono/answer?status=inviting', wait_until='domcontentloaded')
             await self.human_like_wait()
 
         # 获取邀请回答的问题
@@ -246,7 +246,7 @@ class ZhihuRPA:
 
         # 访问搜索页面
         search_url = f'https://www.zhihu.com/search?type=content&q={keyword}'
-        await self.page.goto(search_url, wait_until='networkidle')
+        await self.page.goto(search_url, wait_until='domcontentloaded')
         await self.human_like_wait()
         await self.human_like_scroll(2)
 
@@ -323,7 +323,7 @@ class ZhihuRPA:
             await self.start()
             self.page = await self.context.new_page()
 
-        await self.page.goto(question_url, wait_until='networkidle')
+        await self.page.goto(question_url, wait_until='domcontentloaded')
         await self.human_like_wait()
         await self.human_like_scroll(4)  # 滚动加载更多回答
 
