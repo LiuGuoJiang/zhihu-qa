@@ -1,0 +1,27 @@
+# 知乎问答知识库系统 - 依赖管理
+
+# RPA浏览器自动化
+playwright==1.40.0
+
+# 数据处理
+pydantic==2.5.3
+
+# 日期时间处理
+python-dateutil==2.8.2
+
+# 环境变量管理
+python-dotenv==1.0.0
+
+# JSON处理增强
+ujson==5.9.0
+
+# 文本相似度计算（可选，用于素材相关性评估）
+sentence-transformers==2.2.2
+
+# 日志
+loguru==0.7.2
+
+# 测试
+pytest==7.4.3
+pytest-asyncio==0.21.1
+pytest-playwright==0.4.0

@@ -1,0 +1,100 @@
+{
+  "name": "zhihu-knowledge-base",
+  "version": "1.0.0",
+  "description": "知识库MCP服务器，用于存储和检索知乎问答素材",
+  "server": {
+    "command": "python",
+    "args": ["-m", "mcp_server_knowledge_base"],
+    "env": {
+      "KNOWLEDGE_BASE_PATH": "./data/knowledge_base"
+    }
+  },
+  "tools": [
+    {
+      "name": "search",
+      "description": "搜索知识库中的素材",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "搜索关键词"
+          },
+          "category": {
+            "type": "string",
+            "description": "素材分类（fact_data/expert_opinion/case_study/background）",
+            "enum": ["fact_data", "expert_opinion", "case_study", "background"]
+          },
+          "limit": {
+            "type": "integer",
+            "description": "返回结果数量限制",
+            "default": 10
+          }
+        },
+        "required": ["query"]
+      }
+    },
+    {
+      "name": "store",
+      "description": "存储新素材到知识库",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "material": {
+            "type": "object",
+            "description": "素材数据",
+            "properties": {
+              "id": {"type": "string"},
+              "type": {"type": "string"},
+              "source": {"type": "string"},
+              "title": {"type": "string"},
+              "content": {"type": "string"},
+              "metadata": {"type": "object"}
+            },
+            "required": ["id", "type", "source", "title"]
+          }
+        },
+        "required": ["material"]
+      }
+    },
+    {
+      "name": "get",
+      "description": "根据ID获取素材",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "素材ID"
+          }
+        },
+        "required": ["id"]
+      }
+    },
+    {
+      "name": "list",
+      "description": "列出知识库中的所有素材",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "description": "按分类筛选"
+          },
+          "limit": {
+            "type": "integer",
+            "description": "返回数量限制",
+            "default": 50
+          }
+        }
+      }
+    }
+  ],
+  "resources": [
+    {
+      "name": "materials",
+      "description": "知识库中的所有素材",
+      "uri": "file://data/knowledge_base/materials.json"
+    }
+  ]
+}

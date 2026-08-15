@@ -1,0 +1,146 @@
+# 知乎科技内容工作室 - Paperclip公司配置
+name: "科技内容工作室"
+mission: "通过故事化方式，为科技问题提供高质量的知乎回答"
+description: "专注于科技领域的知乎问答内容生产，通过AI智能体协作完成问题发现、素材收集和故事化回答生成"
+
+# 公司元数据
+metadata:
+  domain: "tech"
+  language: "zh-CN"
+  timezone: "Asia/Shanghai"
+  created_at: "2026-08-15"
+
+# 代理（员工）配置
+agents:
+  # 员工1: 问题探索员
+  - name: question_scout
+    type: claude-code  # 使用Claude Code CLI
+    role: Question Scout
+    title: 问题探索员
+    description: 负责发现知乎上值得回答的科技问题
+
+    # 心跳配置
+    heartbeat:
+      interval: 3600  # 每小时执行一次
+      enabled: true
+
+    # AGENTS.md配置文件路径
+    agents_md: agents/question_scout/AGENTS.md
+
+    # 预算配置
+    budget:
+      monthly_tokens: 500000
+      cost_alert_threshold: 0.8  # 使用80%时预警
+
+    # 权限配置
+    permissions:
+      - read: data/*
+      - write: data/questions.json
+
+    # 工具访问
+    tools:
+      - knowledge_base.search
+      - zhihu_rpa.get_invitation_questions
+      - zhihu_rpa.get_recommended_questions
+      - zhihu_rpa.search_questions
+
+  # 员工2: 素材研究员
+  - name: material_collector
+    type: claude-code
+    role: Material Collector
+    title: 素材研究员
+    description: 负责为选定问题收集高质量的素材
+
+    # 触发式心跳
+    heartbeat:
+      trigger: question_scout  # 当question_scout完成时触发
+      enabled: true
+
+    agents_md: agents/material_collector/AGENTS.md
+
+    budget:
+      monthly_tokens: 2000000
+      cost_alert_threshold: 0.8
+
+    permissions:
+      - read: data/*
+      - write: data/materials/*
+
+    # MCP工具访问
+    mcp_tools:
+      - knowledge_base
+      - zhihu_rpa
+
+    # 共享技能
+    shared_skills:
+      - zhihu_research
+
+  # 员工3: 故事创作者
+  - name: story_writer
+    type: claude-code
+    role: Story Writer
+    title: 故事创作者
+    description: 负责将素材转化为故事化的科技回答
+
+    heartbeat:
+      trigger: material_collector  # 当material_collector完成时触发
+      enabled: true
+
+    agents_md: agents/story_writer/AGENTS.md
+
+    budget:
+      monthly_tokens: 3000000
+      cost_alert_threshold: 0.8
+
+    permissions:
+      - read: data/materials/*
+      - write: data/drafts/*
+
+    # 共享技能
+    shared_skills:
+      - story_writing
+      - tech_analysis
+
+# 共享技能定义
+shared_skills:
+  - name: zhihu_research
+    file: skills/zhihu_research.md
+    description: 在知乎上搜索和分析科技相关的内容
+
+  - name: story_writing
+    file: skills/story_writing.md
+    description: 将科技内容转化为引人入胜的故事形式
+
+  - name: tech_analysis
+    file: skills/tech_analysis.md
+    description: 对科技产品、技术趋势进行专业分析
+
+# MCP服务器配置
+mcp_servers:
+  - name: knowledge_base
+    path: mcp_servers/knowledge_base
+    enabled: true
+    description: 知识库服务，用于存储和检索素材
+
+  - name: zhihu_rpa
+    path: mcp_servers/zhihu_rpa
+    enabled: true
+    description: 知乎RPA服务，通过浏览器自动化获取知乎数据
+
+# 工作流定义
+workflows:
+  - name: question_discovery
+    description: "问题发现工作流"
+    agents: [question_scout]
+    schedule: "0 * * * *"  # 每小时执行
+
+  - name: content_production
+    description: "内容生产工作流"
+    agents: [question_scout, material_collector, story_writer]
+    trigger: manual  # 手动触发
+
+# 公司级配置
+settings:
+  data_retention_days: 90  # 数据保留90天
+  max_questions_in_queue: 50  # 最多50个问题在队列中
+  auto_publish: false  # 不自动发布，需要人工审核

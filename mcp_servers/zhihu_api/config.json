@@ -1,0 +1,131 @@
+{
+  "name": "zhihu-api",
+  "version": "1.0.0",
+  "description": "知乎API MCP服务器，用于获取知乎数据",
+  "server": {
+    "command": "python",
+    "args": ["-m", "mcp_server_zhihu_api"],
+    "env": {
+      "ZHIHU_COOKIE": ""
+    }
+  },
+  "tools": [
+    {
+      "name": "search_questions",
+      "description": "搜索知乎问题",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "搜索关键词"
+          },
+          "category": {
+            "type": "string",
+            "description": "话题分类（tech/general等）",
+            "default": "tech"
+          },
+          "limit": {
+            "type": "integer",
+            "description": "返回数量限制",
+            "default": 20
+          }
+        },
+        "required": ["query"]
+      }
+    },
+    {
+      "name": "get_question_details",
+      "description": "获取问题详细信息",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "question_id": {
+            "type": "string",
+            "description": "问题ID"
+          }
+        },
+        "required": ["question_id"]
+      }
+    },
+    {
+      "name": "get_answers",
+      "description": "获取问题下的回答",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "question_id": {
+            "type": "string",
+            "description": "问题ID"
+          },
+          "min_votes": {
+            "type": "integer",
+            "description": "最小赞同数",
+            "default": 100
+          },
+          "limit": {
+            "type": "integer",
+            "description": "返回数量限制",
+            "default": 10
+          }
+        },
+        "required": ["question_id"]
+      }
+    },
+    {
+      "name": "get_creator_center_questions",
+      "description": "获取创作中心等你来答的问题",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "问题类型：invited（邀请回答）/ recommended（推荐问题）/ all",
+            "enum": ["invited", "recommended", "all"],
+            "default": "all"
+          },
+          "limit": {
+            "type": "integer",
+            "description": "返回数量限制",
+            "default": 20
+          }
+        }
+      }
+    },
+    {
+      "name": "get_invitation_questions",
+      "description": "获取邀请回答的问题列表",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "description": "返回数量限制",
+            "default": 20
+          }
+        }
+      }
+    },
+    {
+      "name": "calculate_hot_score",
+      "description": "计算问题热度分数",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "stats": {
+            "type": "object",
+            "description": "问题统计数据",
+            "properties": {
+              "followers": {"type": "integer"},
+              "answers": {"type": "integer"},
+              "views": {"type": "integer"},
+              "created_at": {"type": "string"}
+            },
+            "required": ["followers", "answers", "views"]
+          }
+        },
+        "required": ["stats"]
+      }
+    }
+  ]
+}
